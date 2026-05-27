@@ -372,8 +372,12 @@
 
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = api;
-    } else {
-        root.APKParser = api;
+    }
+
+    // Always expose to the global scope in browser environments
+    const globalObj = typeof self !== 'undefined' ? self : (typeof window !== 'undefined' ? window : root);
+    if (globalObj) {
+        globalObj.APKParser = api;
     }
 
 })(typeof self !== 'undefined' ? self : this);
