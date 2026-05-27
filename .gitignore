@@ -14,7 +14,3 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
-
-# Heavy Test Files (GitHub blocks files > 100MB)
-*.apk
-*.xapk
