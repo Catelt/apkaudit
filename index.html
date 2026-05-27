@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Deep Link Extractor & Tester</title>
+    <meta name="description"
+        content="Trích xuất và kiểm tra deep links trực tiếp từ file APK/XAPK cực nhanh và bảo mật 100% trong trình duyệt.">
+
+    <!-- JSZip to parse APK/XAPK ZIP packages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- QRious client-side QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Bh_-wC1f.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <div class="logo-wrapper" id="logoHome">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <h1>LINK AUDITOR</h1>
+            </div>
+            <p class="subtitle">Trích xuất, phân tích và kiểm tra các cấu hình Deep Link & App Link trực tiếp từ file
+                APK hoặc XAPK nhanh chóng và an toàn 100%.</p>
+        </header>
+
+        <!-- Landing Section / Drag and Drop File Selector -->
+        <section id="landingSection" class="dropzone-container">
+            <div class="glass-card dropzone" id="dropzone">
+                <div class="dropzone-circle">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Kéo thả file APK hoặc XAPK của bạn</h3>
+                    <p>Hỗ trợ đầy đủ các định dạng APK chuẩn và các gói XAPK (Split APKs). Quá trình xử lý diễn ra 100%
+                        trong trình duyệt.</p>
+                </div>
+                <button class="test-btn" style="padding: 0.8rem 2.5rem; font-size: 0.95rem;">Chọn File APK/XAPK</button>
+                <input type="file" id="fileInput" class="file-input" accept=".apk,.xapk">
+            </div>
+        </section>
+
+        <!-- Dashboard Workspace Section -->
+        <section id="dashboardSection" class="dashboard">
+            <div class="dashboard-layout">
+
+                <!-- Main Panel Area (Tabs View) -->
+                <main class="main-panel">
+
+                    <!-- App Info Header Card (Merged from Sidebar) -->
+                    <div class="glass-card app-header-card">
+                        <div class="app-header-left">
+                            <div class="app-logo-box" id="appLogoBox">A</div>
+                            <div class="app-identity-info">
+                                <div class="app-label-row">
+                                    <h2 class="app-label" id="appLabel">Ứng Dụng</h2>
+                                    <span class="tag-badge applink" id="sidebarPkgType">APK</span>
+                                    <span class="tag-badge" id="sidebarVerName">1.0</span>
+                                </div>
+                                <div class="app-pkg-row">
+                                    <span class="app-pkg" id="appPackage">com.example.app</span>
+                                    <span class="pkg-ver-code" id="sidebarVerCode">Code: 1</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Metrics Grid -->
+                        <div class="header-metrics">
+                            <div class="header-metric-item">
+                                <span class="num" id="metricDeepLinks">0</span>
+                                <span class="lbl">Deep Links</span>
+                            </div>
+                            <div class="header-metric-item purple">
+                                <span class="num" id="metricAppLinks">0</span>
+                                <span class="lbl">App Links</span>
+                            </div>
+                            <div class="header-metric-item">
+                                <span class="num" id="metricCustomCount">0</span>
+                                <span class="lbl">Custom Schemes</span>
+                            </div>
+                            <div class="header-metric-item purple">
+                                <span class="num" id="metricComponents">0</span>
+                                <span class="lbl">Components</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metadata quick info strip -->
+                    <div class="metadata-strip-card">
+                        <div class="strip-item">
+                            <span class="strip-lbl">File:</span>
+                            <span class="strip-val" id="sidebarFileName">-</span>
+                        </div>
+                        <div class="strip-item">
+                            <span class="strip-lbl">Dung lượng:</span>
+                            <span class="strip-val" id="sidebarFileSize">-</span>
+                        </div>
+                        <div class="strip-item">
+                            <span class="strip-lbl">Min SDK:</span>
+                            <span class="strip-val" id="sidebarMinSdk">-</span>
+                        </div>
+                        <div class="strip-item">
+                            <span class="strip-lbl">Target SDK:</span>
+                            <span class="strip-val" id="sidebarTargetSdk">-</span>
+                        </div>
+                        <div class="strip-item hash-item">
+                            <span class="strip-lbl">SHA-256:</span>
+                            <span class="strip-val mono hash" id="sidebarSha256" title="Click to Copy">-</span>
+                        </div>
+                        <div class="strip-item" style="display: none;">
+                            <span class="strip-lbl" style="color: var(--warning)">Gói XAPK:</span>
+                            <span class="strip-val" id="sidebarXapkDetails">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Selection Navbar -->
+                    <nav class="tabs-nav">
+                        <button class="tab-btn active" data-tab="deeplinks">
+                            <span>🔗</span> Deep Links
+                        </button>
+                        <button class="tab-btn" data-tab="tester">
+                            <span>🧪</span> Trình Tester
+                        </button>
+                        <button class="tab-btn" data-tab="xml">
+                            <span>📋</span> XML Manifest
+                        </button>
+                        <button class="tab-btn" data-tab="components">
+                            <span>⚙️</span> Components
+                        </button>
+                    </nav>
+
+                    <!-- PANEL 1: Deep Links -->
+                    <div class="glass-card tab-panel active" id="tabpanel-deeplinks">
+
+                        <!-- Panel Header Controls -->
+                        <div class="panel-header">
+                            <div class="panel-title-wrap">
+                                <span class="panel-title">Danh Sách Deep Links</span>
+                                <span class="badge-count" id="deeplinkCountBadge">0</span>
+                            </div>
+                            <div class="controls-wrap">
+                                <div class="search-input-wrap">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" class="search-input" id="searchInput"
+                                        placeholder="Tìm kiếm Host, Scheme, Path...">
+                                </div>
+                                <select class="filter-select" id="filterSelect">
+                                    <option value="all">Tất cả định dạng</option>
+                                    <option value="applinks">App Links (HTTP/S)</option>
+                                    <option value="custom">Custom Schemes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Deep Link Cards Container -->
+                        <div class="deeplinks-list" id="deeplinksList"></div>
+                    </div>
+
+                    <!-- PANEL 2: Deep Link Tester -->
+                    <div class="glass-card tab-panel" id="tabpanel-tester">
+                        <div class="tester-box">
+                            <div class="panel-title-wrap" style="margin-bottom: 0.5rem">
+                                <span class="panel-title">Kiểm Tra Deep Link Hoạt Động</span>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; font-weight: 300;">
+                                Nhập bất kỳ URL nào của bạn dưới đây để giả lập và xác minh xem ứng dụng Android có khớp
+                                định dạng và mở hoạt cảnh tương ứng hay không.
+                            </p>
+
+                            <div class="tester-input-group">
+                                <label for="testUrlInput">Nhập URL / URI test</label>
+                                <div class="tester-row-wrap">
+                                    <input type="text" class="tester-input" id="testUrlInput"
+                                        placeholder="Ví dụ: myapp://profile/user123 hoặc https://example.com/details">
+                                    <button class="test-btn" id="testBtn">Kiểm Tra Match</button>
+                                </div>
+                            </div>
+
+                            <!-- Testing alert -->
+                            <div class="test-result-alert" id="testResultAlert" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- PANEL 3: Raw XML AndroidManifest -->
+                    <div class="glass-card tab-panel" id="tabpanel-xml">
+                        <div class="xml-viewer-container">
+                            <div class="panel-title-wrap">
+                                <span class="panel-title">AndroidManifest.xml đã giải mã</span>
+                            </div>
+                            <div class="xml-scroll">
+                                <pre class="code-viewer" id="manifestXmlRaw"></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PANEL 4: Components List -->
+                    <div class="glass-card tab-panel" id="tabpanel-components">
+                        <div class="components-box">
+                            <div class="panel-title-wrap">
+                                <span class="panel-title">Components</span>
+                                <span class="badge-count" id="componentsCountBadge">0</span>
+                            </div>
+                            <div class="components-list" id="componentsList"></div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Progress / Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="glass-card loading-content">
+            <div class="progress-ring-container">
+                <svg width="140" height="140">
+                    <defs>
+                        <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00f2fe" />
+                            <stop offset="100%" stop-color="#9b51e0" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="progress-ring-bg" cx="70" cy="70" r="60"></circle>
+                    <circle class="progress-ring-fill" id="progressRingFill" cx="70" cy="70" r="60"></circle>
+                </svg>
+                <div class="progress-value" id="loadingProgressText">0%</div>
+            </div>
+            <div class="loading-text">Đang phân tích gói tin...</div>
+            <div class="loading-subtext" id="loadingSubtext">Đang chuẩn bị giải nén...</div>
+        </div>
+    </div>
+
+    <!-- Modal QR Code visualizer -->
+    <div class="modal-overlay" id="qrModalOverlay">
+        <div class="modal-card">
+            <button class="close-modal-btn" id="closeModal">&times;</button>
+            <h3 class="qr-title">Quét QR Kiểm Tra Trực Tiếp</h3>
+            <p class="qr-instructions">Sử dụng camera điện thoại hoặc máy quét mã vạch để mở deep link này trên thiết bị
+                di động đã cài đặt ứng dụng.</p>
+            <div class="qr-box">
+                <canvas id="qrCanvas"></canvas>
+            </div>
+            <div class="qr-link" id="qrModalLink">myapp://profile</div>
+        </div>
+    </div>
+
+    <!-- Core App Logic scripts -->
+    <script src="parser.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
