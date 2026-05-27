@@ -1,0 +1,27 @@
+{
+  "name": "apkaudit",
+  "version": "1.0.0",
+  "description": "Android Deep Link Extractor & Tester - Premium browser tool to decompile APK/XAPKs, list deep links, test matched patterns, and generate ADB launchers client-side.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "android",
+    "deep-link",
+    "apk",
+    "xapk",
+    "manifest",
+    "axml"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}
