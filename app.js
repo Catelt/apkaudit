@@ -114,6 +114,10 @@
             renderDeepLinksList();
         });
 
+        $('#btnCopyAll').addEventListener('click', () => {
+            handleCopyAllLinks();
+        });
+
         // Deep Link Tester Input
         $('#testUrlInput').addEventListener('input', () => {
             runDeepLinkTester();
@@ -472,6 +476,12 @@
         // Update count badge
         $('#deeplinkCountBadge').textContent = filtered.length;
 
+        // Update Copy Button disabled state based on filtered list length
+        const copyBtn = $('#btnCopyAll');
+        if (copyBtn) {
+            copyBtn.disabled = filtered.length === 0;
+        }
+
         if (filtered.length === 0) {
             listContainer.innerHTML = `
                 <div class="no-data-state">
@@ -745,10 +755,117 @@
     // Helper Utility functions
     async function copyTextToClipboard(text, label) {
         try {
-            await navigator.clipboard.writeText(text);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+                return true;
+            }
         } catch (e) {
-            console.error('Copy failed:', e);
-            alert(`Sao chép thất bại. Bạn vui lòng sao chép thủ công!`);
+            console.warn('Navigator clipboard failed, trying fallback:', e);
+        }
+
+        // Fallback copy method for older browsers or restricted contexts
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            if (successful) return true;
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+        }
+
+        alert(`Sao chép thất bại. Bạn vui lòng sao chép thủ công!`);
+        return false;
+    }
+
+    function getFilteredUrls() {
+        let filtered = State.deepLinks.slice();
+
+        // 1. Filter by search query
+        const q = State.searchQuery.trim().toLowerCase();
+        if (q) {
+            filtered = filtered.filter(dl => 
+                dl.activity.toLowerCase().includes(q) ||
+                dl.schemes.some(s => s.toLowerCase().includes(q)) ||
+                dl.hosts.some(h => h.toLowerCase().includes(q)) ||
+                dl.paths.some(p => p.value.toLowerCase().includes(q))
+            );
+        }
+
+        // 2. Filter by tab selector type
+        if (State.filterType === 'applinks') {
+            filtered = filtered.filter(dl => dl.schemes.includes('http') || dl.schemes.includes('https'));
+        } else if (State.filterType === 'custom') {
+            filtered = filtered.filter(dl => !dl.schemes.includes('http') && !dl.schemes.includes('https'));
+        }
+
+        // 3. Generate unique URLs from filtered items
+        const urls = new Set();
+        for (const dl of filtered) {
+            const schemes = dl.schemes.length > 0 ? dl.schemes : [];
+            let activeSchemes = schemes;
+            if (State.filterType === 'applinks') {
+                activeSchemes = schemes.filter(s => s === 'http' || s === 'https');
+            } else if (State.filterType === 'custom') {
+                activeSchemes = schemes.filter(s => s !== 'http' && s !== 'https');
+            }
+
+            const hosts = dl.hosts.length > 0 ? dl.hosts : [''];
+            const ports = dl.ports.length > 0 ? dl.ports : [''];
+            const paths = dl.paths.length > 0 ? dl.paths.map(p => p.value) : [''];
+
+            for (const scheme of activeSchemes) {
+                for (const host of hosts) {
+                    for (const port of ports) {
+                        for (const path of paths) {
+                            let url = '';
+                            const hostPort = port ? `${host}:${port}` : host;
+                            if (hostPort) {
+                                url = `${scheme}://${hostPort}${path}`;
+                            } else {
+                                url = `${scheme}://${path}`;
+                            }
+                            urls.add(url);
+                        }
+                    }
+                }
+            }
+        }
+        return Array.from(urls);
+    }
+
+    async function handleCopyAllLinks() {
+        const btn = $('#btnCopyAll');
+        if (!btn) return;
+
+        const urls = getFilteredUrls();
+        if (urls.length === 0) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '❌ Trống';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 1500);
+            return;
+        }
+
+        const textToCopy = urls.join('\n');
+        const success = await copyTextToClipboard(textToCopy);
+        
+        if (success) {
+            btn.classList.add('copied');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✓ Đã sao chép';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = originalText;
+            }, 1500);
         }
     }
 
