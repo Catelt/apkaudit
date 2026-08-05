@@ -33,6 +33,7 @@
     // DOM helper
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const { t } = window.I18n;
 
     // Initialize application
     document.addEventListener('DOMContentLoaded', () => {
@@ -165,7 +166,7 @@
 
         const ext = file.name.split('.').pop().toLowerCase();
         if (ext !== 'apk' && ext !== 'xapk') {
-            alert('Vui lòng chọn file .apk hoặc .xapk');
+            alert(t('file.invalid'));
             return;
         }
 
@@ -176,7 +177,7 @@
         State.fileSize = file.size;
         State.packageType = ext.toUpperCase();
 
-        showProgress(0, 'Đang chuẩn bị file...');
+        showProgress(0, t('progress.preparingFile'));
 
         try {
             State.arrayBuffer = await file.arrayBuffer();
@@ -187,7 +188,7 @@
             await parseMobilePackage(State.arrayBuffer, file.name);
         } catch (e) {
             console.error('Lỗi khi phân tích gói:', e);
-            alert('Phân tích file thất bại: ' + e.message);
+            alert(t('file.parseFailed', { message: e.message }));
             hideProgress();
         }
     }
@@ -200,7 +201,7 @@
             if (buffer.byteLength < 10 * 1024 * 1024) {
                 State.md5 = await md5hex(buffer);
             } else {
-                State.md5 = 'N/A (Bỏ qua cho file > 10MB)';
+                State.md5 = t('hash.skipped');
             }
             
             // Update sidebar immediately if finished after parsing
@@ -217,9 +218,9 @@
     }
 
     async function parseMobilePackage(arrayBuffer, fileName) {
-        showProgress(15, 'Đang mở gói ZIP...');
+        showProgress(15, t('progress.openingZip'));
         if (typeof JSZip === 'undefined') {
-            throw new Error('Thư viện JSZip chưa được tải!');
+            throw new Error(t('error.jszipMissing'));
         }
 
         const zip = await JSZip.loadAsync(arrayBuffer);
@@ -228,12 +229,12 @@
         let xapkDetails = '';
 
         if (fileName.toLowerCase().endsWith('.xapk')) {
-            showProgress(30, 'Đang phân tích XAPK...');
+            showProgress(30, t('progress.parsingXapk'));
             
             // Find split packages ending in .apk
             const apkFiles = Object.keys(zip.files).filter(name => name.endsWith('.apk'));
             if (apkFiles.length === 0) {
-                throw new Error('Không tìm thấy file APK nào bên trong XAPK!');
+                throw new Error(t('error.noApkInXapk'));
             }
 
             // Try to extract packageName from XAPK manifest.json if present
@@ -286,32 +287,32 @@
             }
 
             apkName = mainApkName || apkFiles[0];
-            xapkDetails = `XAPK chứa ${apkFiles.length} file splits. Đang giải nén: ${apkName}`;
+            xapkDetails = t('xapk.details', { count: apkFiles.length, name: apkName });
             
-            showProgress(45, `Đang giải nén APK: ${apkName}...`);
+            showProgress(45, t('progress.extractingApk', { name: apkName }));
             const apkEntry = zip.file(apkName);
             apkBuffer = await apkEntry.async('arraybuffer');
         }
 
         // Now process the target APK buffer
-        showProgress(60, 'Đang phân tích APK...');
+        showProgress(60, t('progress.parsingApk'));
         const apkZip = await JSZip.loadAsync(apkBuffer);
         const manifestEntry = apkZip.file('AndroidManifest.xml');
 
         if (!manifestEntry) {
-            throw new Error('Không tìm thấy AndroidManifest.xml trong file APK!');
+            throw new Error(t('error.manifestMissing'));
         }
 
-        showProgress(75, 'Đang giải mã AndroidManifest binary...');
+        showProgress(75, t('progress.decodingManifest'));
         const manifestBuffer = await manifestEntry.async('arraybuffer');
         const parser = new APKParser.AXMLParser(manifestBuffer);
         const manifestTree = parser.parse();
 
         if (!manifestTree) {
-            throw new Error('Giải mã AndroidManifest.xml thất bại!');
+            throw new Error(t('error.manifestDecode'));
         }
 
-        showProgress(90, 'Đang nén dữ liệu và trích xuất deep links...');
+        showProgress(90, t('progress.extractingLinks'));
         
         // Helper to filter out binary resource reference IDs (integers/hex) from app labels
         const cleanAppLabel = (val) => {
@@ -348,7 +349,7 @@
         extractAllComponents(appNode);
 
         // Complete!
-        showProgress(100, 'Hoàn thành!');
+        showProgress(100, t('progress.complete'));
         
         setTimeout(() => {
             hideProgress();
@@ -414,12 +415,12 @@
         $('#sidebarTargetSdk').textContent = State.targetSdk ? `${State.targetSdk} (${getAndroidVerName(State.targetSdk)})` : '-';
         
         // Hashes
-        $('#sidebarSha256').textContent = State.sha256 || 'Đang tính toán...';
-        $('#sidebarSha256').title = State.sha256 || 'Calculated SHA-256';
+        $('#sidebarSha256').textContent = State.sha256 || t('hash.calculating');
+        $('#sidebarSha256').title = State.sha256 || t('metadata.copyHash');
         
         const md5El = $('#sidebarMd5');
         if (md5El) {
-            md5El.textContent = State.md5 || 'Đang tính toán...';
+            md5El.textContent = State.md5 || t('hash.calculating');
         }
 
         // Add copy event to hash
@@ -486,8 +487,8 @@
             listContainer.innerHTML = `
                 <div class="no-data-state">
                     <span class="no-data-icon">🔗</span>
-                    <h3>Không tìm thấy Deep Link nào</h3>
-                    <p>Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm của bạn.</p>
+                    <h3>${t('deeplinks.emptyTitle')}</h3>
+                    <p>${t('deeplinks.emptyHint')}</p>
                 </div>
             `;
             return;
@@ -566,10 +567,10 @@
                             <span class="adb-lbl">ADB CMD</span>
                             <div class="adb-cmd">${APKParser.esc(adbCmd)}</div>
                             <div class="card-actions-wrap" style="padding: 0 1rem">
-                                <button class="icon-btn" onclick="APKParser.copyAdbCommand(this, '${APKParser.esc(adbCmd).replace(/'/g, "\\'")}')" title="Sao chép câu lệnh ADB">
+                                <button class="icon-btn" onclick="APKParser.copyAdbCommand(this, '${APKParser.esc(adbCmd).replace(/'/g, "\\'")}')" title="${t('deeplinks.copyAdb')}">
                                     📋
                                 </button>
-                                <button class="icon-btn" onclick="APKParser.showQrModal(this, '${previewUrl}')" title="Hiển thị mã QR để quét">
+                                <button class="icon-btn" onclick="APKParser.showQrModal(this, '${previewUrl}')" title="${t('deeplinks.showQr')}">
                                     📱
                                 </button>
                             </div>
@@ -585,7 +586,7 @@
         if (State.manifestStr) {
             rawView.textContent = State.manifestStr;
         } else {
-            rawView.textContent = 'AndroidManifest.xml not loaded.';
+            rawView.textContent = t('manifest.notLoaded');
         }
     }
 
@@ -594,7 +595,7 @@
         $('#componentsCountBadge').textContent = State.components.length;
 
         if (State.components.length === 0) {
-            container.innerHTML = '<div class="no-data-state">Chưa có component nào được tải</div>';
+            container.innerHTML = `<div class="no-data-state">${t('components.empty')}</div>`;
             return;
         }
 
@@ -658,8 +659,8 @@
             alertBox.innerHTML = `
                 <span class="icon-badge">✅</span>
                 <div>
-                    <strong>KHỚP HOÀN TOÀN!</strong><br>
-                    Tìm thấy ${matchResult.matches.length} Intent Filter có cấu hình phù hợp với URL này.
+                    <strong>${t('tester.matchTitle')}</strong><br>
+                    ${t('tester.matchCount', { count: matchResult.matches.length })}
                 </div>
             `;
 
@@ -698,15 +699,15 @@
             alertBox.style.display = 'flex';
             alertBox.className = 'test-result-alert no-match';
             
-            let reason = 'Không tìm thấy intent-filter nào phù hợp với URL đã nhập.';
+            let reason = t('tester.noMatchReason');
             if (matchResult.reason) {
-                reason = matchResult.reason;
+                reason = t('tester.invalidUrl');
             }
 
             alertBox.innerHTML = `
                 <span class="icon-badge">❌</span>
                 <div>
-                    <strong>KHÔNG KHỚP!</strong><br>
+                    <strong>${t('tester.noMatchTitle')}</strong><br>
                     ${reason}
                 </div>
             `;
@@ -731,7 +732,7 @@
                 level: 'H'
             });
         } else {
-            qrCanvas.parentElement.innerHTML = '<span style="color:#ff4757">Lỗi: Thư viện tạo mã QR chưa được tải!</span>';
+            qrCanvas.parentElement.innerHTML = `<span style="color:#ff4757">${t('error.qrLibraryMissing')}</span>`;
         }
 
         overlay.classList.add('active');
@@ -781,7 +782,7 @@
             console.error('Fallback copy failed:', err);
         }
 
-        alert(`Sao chép thất bại. Bạn vui lòng sao chép thủ công!`);
+        alert(t('clipboard.failed'));
         return false;
     }
 
@@ -848,7 +849,7 @@
         const urls = getFilteredUrls();
         if (urls.length === 0) {
             const originalText = btn.innerHTML;
-            btn.innerHTML = '❌ Trống';
+            btn.innerHTML = `❌ ${t('clipboard.empty')}`;
             setTimeout(() => {
                 btn.innerHTML = originalText;
             }, 1500);
@@ -861,7 +862,7 @@
         if (success) {
             btn.classList.add('copied');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '✓ Đã sao chép';
+            btn.innerHTML = `✓ ${t('clipboard.copied')}`;
             setTimeout(() => {
                 btn.classList.remove('copied');
                 btn.innerHTML = originalText;
@@ -897,7 +898,7 @@
         
         overlay.classList.add('active');
         textEl.textContent = `${percent}%`;
-        subtextEl.textContent = text || 'Vui lòng chờ...';
+        subtextEl.textContent = text || t('progress.wait');
 
         // Update SVG circular stroke offset
         const ring = $('#progressRingFill');

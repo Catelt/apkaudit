@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Android Deep Link Extractor & Tester</title>
-    <meta name="description"
+    <meta name="description" data-i18n-content="meta.description"
         content="Trích xuất và kiểm tra deep links trực tiếp từ file APK/XAPK cực nhanh và bảo mật 100% trong trình duyệt.">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="./favicon.svg">
@@ -31,7 +31,7 @@
                 </svg>
                 <h1>LINK AUDITOR</h1>
             </div>
-            <p class="subtitle">Trích xuất, phân tích và kiểm tra các cấu hình Deep Link & App Link trực tiếp từ file
+            <p class="subtitle" data-i18n="header.subtitle">Trích xuất, phân tích và kiểm tra các cấu hình Deep Link & App Link trực tiếp từ file
                 APK hoặc XAPK nhanh chóng và an toàn 100%.</p>
         </header>
 
@@ -47,11 +47,11 @@
                     </svg>
                 </div>
                 <div>
-                    <h3>Kéo thả file APK hoặc XAPK của bạn</h3>
-                    <p>Hỗ trợ đầy đủ các định dạng APK chuẩn và các gói XAPK (Split APKs). Quá trình xử lý diễn ra 100%
+                    <h3 data-i18n="upload.title">Kéo thả file APK hoặc XAPK của bạn</h3>
+                    <p data-i18n="upload.description">Hỗ trợ đầy đủ các định dạng APK chuẩn và các gói XAPK (Split APKs). Quá trình xử lý diễn ra 100%
                         trong trình duyệt.</p>
                 </div>
-                <button class="test-btn" style="padding: 0.8rem 2.5rem; font-size: 0.95rem;">Chọn File APK/XAPK</button>
+                <button class="test-btn" style="padding: 0.8rem 2.5rem; font-size: 0.95rem;" data-i18n="upload.choose">Chọn File APK/XAPK</button>
                 <input type="file" id="fileInput" class="file-input" accept=".apk,.xapk">
             </div>
         </section>
@@ -69,7 +69,7 @@
                             <div class="app-logo-box" id="appLogoBox">A</div>
                             <div class="app-identity-info">
                                 <div class="app-label-row">
-                                    <h2 class="app-label" id="appLabel">Ứng Dụng</h2>
+                                    <h2 class="app-label" id="appLabel" data-i18n="app.defaultName">Ứng Dụng</h2>
                                     <span class="tag-badge applink" id="sidebarPkgType">APK</span>
                                     <span class="tag-badge" id="sidebarVerName">1.0</span>
                                 </div>
@@ -108,7 +108,7 @@
                             <span class="strip-val" id="sidebarFileName">-</span>
                         </div>
                         <div class="strip-item">
-                            <span class="strip-lbl">Dung lượng:</span>
+                            <span class="strip-lbl" data-i18n="metadata.size">Dung lượng:</span>
                             <span class="strip-val" id="sidebarFileSize">-</span>
                         </div>
                         <div class="strip-item">
@@ -121,10 +121,10 @@
                         </div>
                         <div class="strip-item hash-item">
                             <span class="strip-lbl">SHA-256:</span>
-                            <span class="strip-val mono hash" id="sidebarSha256" title="Click to Copy">-</span>
+                            <span class="strip-val mono hash" id="sidebarSha256" title="Click to Copy" data-i18n-title="metadata.copyHash">-</span>
                         </div>
                         <div class="strip-item" style="display: none;">
-                            <span class="strip-lbl" style="color: var(--warning)">Gói XAPK:</span>
+                            <span class="strip-lbl" style="color: var(--warning)" data-i18n="metadata.xapk">Gói XAPK:</span>
                             <span class="strip-val" id="sidebarXapkDetails">-</span>
                         </div>
                     </div>
@@ -135,7 +135,7 @@
                             <span>🔗</span> Deep Links
                         </button>
                         <button class="tab-btn" data-tab="tester">
-                            <span>🧪</span> Trình Tester
+                            <span>🧪</span> <span data-i18n="tabs.tester">Trình Tester</span>
                         </button>
                         <button class="tab-btn" data-tab="xml">
                             <span>📋</span> XML Manifest
@@ -151,21 +151,21 @@
                         <!-- Panel Header Controls -->
                         <div class="panel-header">
                             <div class="panel-title-wrap">
-                                <span class="panel-title">Danh Sách Deep Links</span>
+                                <span class="panel-title" data-i18n="deeplinks.title">Danh Sách Deep Links</span>
                                 <span class="badge-count" id="deeplinkCountBadge">0</span>
                             </div>
                             <div class="controls-wrap">
                                 <div class="search-input-wrap">
                                     <span class="search-icon">🔍</span>
                                     <input type="text" class="search-input" id="searchInput"
-                                        placeholder="Tìm kiếm Host, Scheme, Path...">
+                                        placeholder="Tìm kiếm Host, Scheme, Path..." data-i18n-placeholder="deeplinks.searchPlaceholder">
                                 </div>
                                 <select class="filter-select" id="filterSelect">
-                                    <option value="all">Tất cả định dạng</option>
+                                    <option value="all" data-i18n="deeplinks.allFormats">Tất cả định dạng</option>
                                     <option value="applinks">App Links (HTTP/S)</option>
                                     <option value="custom">Custom Schemes</option>
                                 </select>
-                                <button class="btn-copy-all" id="btnCopyAll" title="Sao chép toàn bộ URL đang hiển thị">
+                                <button class="btn-copy-all" id="btnCopyAll" title="Sao chép toàn bộ URL đang hiển thị" data-i18n-title="deeplinks.copyAllTitle">
                                     <span>📋</span> Copy
                                 </button>
                             </div>
@@ -179,19 +179,19 @@
                     <div class="glass-card tab-panel" id="tabpanel-tester">
                         <div class="tester-box">
                             <div class="panel-title-wrap" style="margin-bottom: 0.5rem">
-                                <span class="panel-title">Kiểm Tra Deep Link Hoạt Động</span>
+                                <span class="panel-title" data-i18n="tester.title">Kiểm Tra Deep Link Hoạt Động</span>
                             </div>
-                            <p style="color: var(--text-secondary); font-size: 0.95rem; font-weight: 300;">
+                            <p style="color: var(--text-secondary); font-size: 0.95rem; font-weight: 300;" data-i18n="tester.description">
                                 Nhập bất kỳ URL nào của bạn dưới đây để giả lập và xác minh xem ứng dụng Android có khớp
                                 định dạng và mở hoạt cảnh tương ứng hay không.
                             </p>
 
                             <div class="tester-input-group">
-                                <label for="testUrlInput">Nhập URL / URI test</label>
+                                <label for="testUrlInput" data-i18n="tester.inputLabel">Nhập URL / URI test</label>
                                 <div class="tester-row-wrap">
                                     <input type="text" class="tester-input" id="testUrlInput"
-                                        placeholder="Ví dụ: myapp://profile/user123 hoặc https://example.com/details">
-                                    <button class="test-btn" id="testBtn">Kiểm Tra Match</button>
+                                        placeholder="Ví dụ: myapp://profile/user123 hoặc https://example.com/details" data-i18n-placeholder="tester.placeholder">
+                                    <button class="test-btn" id="testBtn" data-i18n="tester.button">Kiểm Tra Match</button>
                                 </div>
                             </div>
 
@@ -204,7 +204,7 @@
                     <div class="glass-card tab-panel" id="tabpanel-xml">
                         <div class="xml-viewer-container">
                             <div class="panel-title-wrap">
-                                <span class="panel-title">AndroidManifest.xml đã giải mã</span>
+                                <span class="panel-title" data-i18n="manifest.title">AndroidManifest.xml đã giải mã</span>
                             </div>
                             <div class="xml-scroll">
                                 <pre class="code-viewer" id="manifestXmlRaw"></pre>
@@ -245,8 +245,8 @@
                 </svg>
                 <div class="progress-value" id="loadingProgressText">0%</div>
             </div>
-            <div class="loading-text">Đang phân tích gói tin...</div>
-            <div class="loading-subtext" id="loadingSubtext">Đang chuẩn bị giải nén...</div>
+            <div class="loading-text" data-i18n="loading.title">Đang phân tích gói tin...</div>
+            <div class="loading-subtext" id="loadingSubtext" data-i18n="loading.preparingExtract">Đang chuẩn bị giải nén...</div>
         </div>
     </div>
 
@@ -254,8 +254,8 @@
     <div class="modal-overlay" id="qrModalOverlay">
         <div class="modal-card">
             <button class="close-modal-btn" id="closeModal">&times;</button>
-            <h3 class="qr-title">Quét QR Kiểm Tra Trực Tiếp</h3>
-            <p class="qr-instructions">Sử dụng camera điện thoại hoặc máy quét mã vạch để mở deep link này trên thiết bị
+            <h3 class="qr-title" data-i18n="qr.title">Quét QR Kiểm Tra Trực Tiếp</h3>
+            <p class="qr-instructions" data-i18n="qr.instructions">Sử dụng camera điện thoại hoặc máy quét mã vạch để mở deep link này trên thiết bị
                 di động đã cài đặt ứng dụng.</p>
             <div class="qr-box">
                 <canvas id="qrCanvas"></canvas>
@@ -265,6 +265,7 @@
     </div>
 
     <!-- Core App Logic scripts -->
+    <script type="module" src="i18n.js"></script>
     <script type="module" src="parser.js"></script>
     <script type="module" src="app.js"></script>
 </body>
