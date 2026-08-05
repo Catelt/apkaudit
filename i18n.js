@@ -122,8 +122,9 @@
         }
     };
 
-    const requestedLocale = navigator.language || 'en';
-    const locale = requestedLocale.toLowerCase().split('-')[0] === 'vi' ? 'vi' : 'en';
+    const locale = window.location.pathname === '/vi' || window.location.pathname.startsWith('/vi/')
+        ? 'vi'
+        : 'en';
 
     function t(key, params = {}) {
         const template = messages[locale][key] ?? messages.en[key] ?? key;

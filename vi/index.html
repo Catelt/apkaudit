@@ -1,41 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Android Deep Link Extractor & Tester</title>
+    <title>Trích xuất &amp; Kiểm thử Deep Link Android</title>
     <meta name="description" data-i18n-content="meta.description"
-        content="Extract and test Android deep links from APK and XAPK files securely in your browser.">
+        content="Trích xuất và kiểm thử deep link Android từ tệp APK và XAPK an toàn ngay trong trình duyệt.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://apkaudit.catelt.com/">
+    <link rel="canonical" href="https://apkaudit.catelt.com/vi/">
     <link rel="alternate" hreflang="en" href="https://apkaudit.catelt.com/">
     <link rel="alternate" hreflang="vi" href="https://apkaudit.catelt.com/vi/">
     <link rel="alternate" hreflang="x-default" href="https://apkaudit.catelt.com/">
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Link Auditor">
-    <meta property="og:title" content="Android Deep Link Extractor & Tester">
+    <meta property="og:title" content="Trích xuất &amp; Kiểm thử Deep Link Android">
     <meta property="og:description"
-        content="Extract and test Android deep links from APK and XAPK files securely in your browser.">
-    <meta property="og:url" content="https://apkaudit.catelt.com/">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:locale:alternate" content="vi_VN">
+        content="Trích xuất và kiểm thử deep link Android từ tệp APK và XAPK an toàn ngay trong trình duyệt.">
+    <meta property="og:url" content="https://apkaudit.catelt.com/vi/">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:locale:alternate" content="en_US">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Android Deep Link Extractor & Tester">
+    <meta name="twitter:title" content="Trích xuất &amp; Kiểm thử Deep Link Android">
     <meta name="twitter:description"
-        content="Extract and test Android deep links from APK and XAPK files securely in your browser.">
+        content="Trích xuất và kiểm thử deep link Android từ tệp APK và XAPK an toàn ngay trong trình duyệt.">
 
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "Link Auditor",
-            "url": "https://apkaudit.catelt.com/",
-            "description": "Extract, inspect, and test Android deep links and app links from APK and XAPK files in your browser.",
+            "url": "https://apkaudit.catelt.com/vi/",
+            "description": "Trích xuất, phân tích và kiểm thử Deep Link cùng App Link Android từ tệp APK và XAPK ngay trong trình duyệt.",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Any",
-            "browserRequirements": "Requires JavaScript and a modern web browser.",
+            "browserRequirements": "Yêu cầu JavaScript và trình duyệt web hiện đại.",
             "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -43,8 +43,8 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 
     <!-- JSZip to parse APK/XAPK ZIP packages -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -59,9 +59,9 @@
 
         <!-- Header -->
         <header>
-            <nav class="language-switcher" aria-label="Language selector">
-                <a href="/" lang="en" aria-current="page">English</a>
-                <a href="/vi/" lang="vi">Tiếng Việt</a>
+            <nav class="language-switcher" aria-label="Chọn ngôn ngữ">
+                <a href="/" lang="en">English</a>
+                <a href="/vi/" lang="vi" aria-current="page">Tiếng Việt</a>
             </nav>
             <div class="logo-wrapper" id="logoHome">
                 <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -71,7 +71,7 @@
                 </svg>
                 <h1>APK/XAPK AUDITOR</h1>
             </div>
-            <p class="subtitle" data-i18n="header.subtitle">Extract, analyze, and test Android Deep Link and App Link configurations directly from APK or XAPK files.</p>
+            <p class="subtitle" data-i18n="header.subtitle">Trích xuất, phân tích và kiểm thử cấu hình Deep Link cùng App Link Android trực tiếp từ tệp APK hoặc XAPK.</p>
         </header>
 
         <!-- Landing Section / Drag and Drop File Selector -->
@@ -86,47 +86,47 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 data-i18n="upload.title">Drop your APK or XAPK file here</h3>
-                    <p data-i18n="upload.description">Supports standard APK files and XAPK packages (Split APKs). All processing happens entirely in your browser.</p>
+                    <h3 data-i18n="upload.title">Kéo thả tệp APK hoặc XAPK vào đây</h3>
+                    <p data-i18n="upload.description">Hỗ trợ tệp APK tiêu chuẩn và gói XAPK (Split APK). Toàn bộ quá trình xử lý diễn ra trong trình duyệt.</p>
                 </div>
-                <button class="test-btn" style="padding: 0.8rem 2.5rem; font-size: 0.95rem;" data-i18n="upload.choose">Choose APK/XAPK File</button>
+                <button class="test-btn" style="padding: 0.8rem 2.5rem; font-size: 0.95rem;" data-i18n="upload.choose">Chọn tệp APK/XAPK</button>
                 <input type="file" id="fileInput" class="file-input" accept=".apk,.xapk">
             </div>
 
             <div class="seo-content">
                 <section class="seo-intro" aria-labelledby="about-link-auditor">
-                    <h2 id="about-link-auditor">Audit Android deep links without uploading your app</h2>
-                    <p>Link Auditor reads the AndroidManifest.xml inside APK and XAPK packages to reveal custom schemes, verified App Links, intent filters, activities, and matching URL patterns. Everything runs locally in your browser.</p>
+                    <h2 id="about-link-auditor">Phân tích deep link Android mà không cần tải ứng dụng lên máy chủ</h2>
+                    <p>Link Auditor đọc AndroidManifest.xml bên trong gói APK và XAPK để tìm custom scheme, App Link, intent filter, activity và mẫu URL tương ứng. Mọi thao tác đều chạy cục bộ trong trình duyệt.</p>
                 </section>
 
-                <section class="feature-grid" aria-label="Link Auditor features">
+                <section class="feature-grid" aria-label="Tính năng của Link Auditor">
                     <article class="glass-card feature-card">
-                        <h3>Extract APK and XAPK links</h3>
-                        <p>Inspect standard APK files and split APK packages, including schemes, hosts, ports, paths, and Android activities.</p>
+                        <h3>Trích xuất liên kết từ APK và XAPK</h3>
+                        <p>Phân tích tệp APK tiêu chuẩn và gói split APK, bao gồm scheme, host, port, path và Android activity.</p>
                     </article>
                     <article class="glass-card feature-card">
-                        <h3>Test URL matching</h3>
-                        <p>Check whether a URL matches an intent filter and generate practical ADB commands and QR codes for device testing.</p>
+                        <h3>Kiểm thử URL</h3>
+                        <p>Kiểm tra URL có khớp intent filter hay không, đồng thời tạo lệnh ADB và mã QR để kiểm thử trên thiết bị.</p>
                     </article>
                     <article class="glass-card feature-card" id="privacy">
-                        <h3>Private, client-side analysis</h3>
-                        <p>Your application package stays on your device. Parsing, hashing, and manifest inspection happen locally in browser memory.</p>
+                        <h3>Phân tích riêng tư ngay trên trình duyệt</h3>
+                        <p>Gói ứng dụng luôn nằm trên thiết bị của bạn. Việc phân tích, tạo mã băm và đọc manifest diễn ra cục bộ trong bộ nhớ trình duyệt.</p>
                     </article>
                 </section>
 
                 <section class="faq-section" aria-labelledby="faq-title">
-                    <h2 id="faq-title">Frequently asked questions</h2>
+                    <h2 id="faq-title">Câu hỏi thường gặp</h2>
                     <details>
-                        <summary>What Android link formats can I inspect?</summary>
-                        <p>You can inspect HTTP and HTTPS App Links, custom URI schemes, and the host and path rules declared by Android intent filters.</p>
+                        <summary>Có thể phân tích những định dạng liên kết Android nào?</summary>
+                        <p>Bạn có thể phân tích App Link HTTP/HTTPS, custom URI scheme cùng quy tắc host và path được khai báo trong Android intent filter.</p>
                     </details>
                     <details>
-                        <summary>Does Link Auditor upload my APK?</summary>
-                        <p>No. The selected file is processed locally by JavaScript in your browser and is not uploaded to an application server.</p>
+                        <summary>Link Auditor có tải APK của tôi lên máy chủ không?</summary>
+                        <p>Không. Tệp được xử lý cục bộ bằng JavaScript trong trình duyệt và không được tải lên máy chủ ứng dụng.</p>
                     </details>
                     <details>
-                        <summary>Can I test the extracted deep links?</summary>
-                        <p>Yes. Use the built-in matcher, copy the generated ADB command, or scan a QR code to test a link on an Android device.</p>
+                        <summary>Tôi có thể kiểm thử các deep link đã trích xuất không?</summary>
+                        <p>Có. Bạn có thể dùng công cụ đối chiếu tích hợp, sao chép lệnh ADB hoặc quét mã QR để kiểm thử liên kết trên thiết bị Android.</p>
                     </details>
                 </section>
 
@@ -342,9 +342,10 @@
     </div>
 
     <!-- Core App Logic scripts -->
-    <script type="module" src="i18n.js"></script>
-    <script type="module" src="parser.js"></script>
-    <script type="module" src="app.js"></script>
+    <script type="module" src="../i18n.js"></script>
+    <script type="module" src="../parser.js"></script>
+    <script type="module" src="../app.js"></script>
 </body>
 
 </html>
+
