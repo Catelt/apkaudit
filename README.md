@@ -1,5 +1,7 @@
 # 🔗 Link Auditor - Android Deep Link Extractor & Tester
 
+**Live tool:** [https://apkaudit.catelt.com/](https://apkaudit.catelt.com/)
+
 Ứng dụng web cao cấp giúp phân tích, giải mã và hiển thị tất cả các cấu hình **Deep Link** (Custom Schemes) & **App Links** (HTTP/HTTPS) từ các tệp ứng dụng **APK** và **XAPK** (Split APKs) ngay lập tức trong trình duyệt.
 
 Toàn bộ quá trình giải mã, phân tích mã nguồn nhị phân nhị phân `AndroidManifest.xml` diễn ra hoàn toàn **client-side** (offline) bằng Javascript. File ứng dụng không bao giờ tải lên bất kỳ máy chủ nào, đảm bảo bảo mật và tốc độ tối đa!
